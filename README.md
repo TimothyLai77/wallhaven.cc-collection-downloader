@@ -7,3 +7,4 @@ apikey can be found in your user settings, and the collection ID is some string 
 
 # Todo:
 * Make API key optional. Public collections should download without an API key.  
+* Probably should check the status of the response in download(), if 200OK then keep going. and anything else try again (up to a limit)
