@@ -29,6 +29,7 @@ def main():
     
     # create the download path
     fullDownloadDirectory = os.path.join(baseDownloadPath, collectionID, '')
+    os.makedirs(os.path.dirname(fullDownloadDirectory), exist_ok=True)
     existingWallpapers = populateSet(existingWallpapers, fullDownloadDirectory)
 
     # get metadata about collection from API
@@ -70,12 +71,8 @@ def getCollection(username, apiKey, collectionID, page=1):
 # Wallhaven has a 45/min API rate limit, so this will wait 2 seconds (safer side) between downloads
 def downloadWallpapers(collection, collectionID):
     global current
-    # set the directory and filepath on where to download
-    #downloadDirectory = os.path.join('downloads/', collectionID, '')
-    os.makedirs(os.path.dirname(fullDownloadDirectory), exist_ok=True)
 
-    # main loop, wallhaven paginates a set amount at a time. so exit when current page is done.
-    
+    # main loop, wallhaven paginates a set amount at a time. so exit when current page is done.    
     for wallpaper in collection['data']:
         currentFile = os.path.basename(wallpaper['path'])
         if(currentFile not in existingWallpapers):
