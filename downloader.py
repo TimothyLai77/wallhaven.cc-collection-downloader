@@ -2,6 +2,9 @@ import sys
 import requests
 import os
 import time
+
+baseDownloadPath='downloads/'
+fullDownloadDirectory=''
 # for tracking progress
 totalWallpapers = None
 current = 1
@@ -10,16 +13,23 @@ currentPage = 1
 
 # pass in API Key, and the collection you want to download
 def main():
+    global baseDownloadPath
+    global fullDownloadDirectory
     global totalWallpapers
     global currentPage
     username = sys.argv[1]
     apiKey = sys.argv[2]
     collectionID = sys.argv[3]
+    
+    # create the download path
+    fullDownloadDirectory = os.path.join(baseDownloadPath, collectionID, '')
+    
     # get metadata about collection from API
     collection = getCollection(username, apiKey, collectionID);    
 
     # set number of wallpapers
     totalWallpapers = collection['meta']['total']
+
 
     # Wallhaven paginates collections. I think it's 24 wallpapers / page
     # so 49 wallpapers has 3 pages (also conviently there's a meta.last_page value).
@@ -44,14 +54,14 @@ def getCollection(username, apiKey, collectionID, page=1):
 def downloadWallpapers(collection, collectionID):
     global current
     # set the directory and filepath on where to download
-    downloadDirectory = os.path.join('downloads/', collectionID, '')
-    os.makedirs(os.path.dirname(downloadDirectory), exist_ok=True)
+    #downloadDirectory = os.path.join('downloads/', collectionID, '')
+    os.makedirs(os.path.dirname(fullDownloadDirectory), exist_ok=True)
 
     # main loop, wallhaven paginates a set amount at a time. so exit when current page is done.
     for wallpaper in collection['data']:
         time.sleep(2)
         print("downloading: %i/%i..." % (current, totalWallpapers))
-        download(wallpaper['path'], downloadDirectory)
+        download(wallpaper['path'], fullDownloadDirectory)
         current += 1
 
         
