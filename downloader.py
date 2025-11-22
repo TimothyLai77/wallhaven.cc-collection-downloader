@@ -59,6 +59,9 @@ def populateSet(set, directory):
 
 # Get the list of wallpapers (up to 24, wallhaven paginates 24 at a time)
 def getCollection(username, apiKey, collectionID, page=1):
+    # *TECHNICALLY* you can exceed the rate limit if you had > 45 pages of wallpapers and it just skipped 45 pages of them in under a minute. 
+    # probably don't need it, but this program is already slow as beans anyways.
+    time.sleep(1.35) 
     url = 'https://wallhaven.cc/api/v1/collections/%s/%s' % (username, collectionID)
     response = requests.get(url, {'apikey': apiKey, 'page': page})
     return response.json()
@@ -76,7 +79,7 @@ def downloadWallpapers(collection, collectionID):
     for wallpaper in collection['data']:
         currentFile = os.path.basename(wallpaper['path'])
         if(currentFile not in existingWallpapers):
-            time.sleep(2)
+            time.sleep(1.5)
             print("[%i/%i]: downloading..." % (current, totalWallpapers))
             download(wallpaper['path'], fullDownloadDirectory)
         else:
